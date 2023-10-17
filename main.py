@@ -19,7 +19,7 @@ pipe_up_surf = pg.image.load('flappy-bird-assets/sprites/pipe-green.png').conver
 pipe_down_surf = pg.transform.flip(pipe_up_surf, 0,1)
 
 pipe_up_rect = pipe_up_surf.get_rect(midtop = (230, 350))
-pipe_down_rect = pipe_down_surf.get_rect(midbottom = (230, 200))
+pipe_down_rect = pipe_down_surf.get_rect(midbottom = (230, 199))
 
 pipe_rects = [pipe_up_rect, pipe_down_rect]
 
