@@ -39,6 +39,7 @@ def reset_game():
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
+            
             pg.quit()
             exit()
 
