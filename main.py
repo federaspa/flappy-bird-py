@@ -9,6 +9,8 @@ font = pg.font.Font(None, 30)
 clock = pg.time.Clock()
 game_active = 0
 gravity = 0
+flag = 0 
+score = 0
 pipe_index = 0
 pipe_rects = []
 
@@ -33,11 +35,23 @@ def display_pipes(pipe_rects):
             screen.blit(pipe_up_surf, pipes[0])
             screen.blit(pipe_down_surf, pipes[1])
 
+def check_collisions(bird_rect, pipe_rects):
+    for pipes in pipe_rects:
+        for pipe in pipes:
+            if bird_rect.colliderect(pipe):
+                return 0
+
+    return True
+
+def display_score(score):
+    score_surf = font.render(f'Score: {score}', True, 'Black')
+    score_rect = score_surf.get_rect(center = (144,100))
+    screen.blit(score_surf, score_rect)
+    
 
 bg_surf = pg.image.load('flappy-bird-assets/sprites/background-day.png').convert_alpha()
 floor_surf = pg.image.load('flappy-bird-assets/sprites/base.png').convert_alpha()
-text_surf = font.render('Score', True, 'Black')
-text_rect = text_surf.get_rect(center = (144,100))
+
 
 # bird
 bird_surf = pg.image.load('flappy-bird-assets/sprites/yellowbird-upflap.png').convert_alpha()
@@ -57,13 +71,7 @@ pipe_timer = pg.USEREVENT +1
 pg.time.set_timer(pipe_timer, 1500)
 
 
-def check_collisions(bird_rect, pipe_rects):
-    for pipes in pipe_rects:
-        for pipe in pipes:
-            if bird_rect.colliderect(pipe):
-                return 0
 
-    return True
 
 while True:
     for event in pg.event.get():
@@ -88,13 +96,18 @@ while True:
 
     if game_active:
         for pipes in pipe_rects:
-            if not pipes:
+
+            if (not flag) and any(pipe.right < 90 for pipe in pipes):
+                flag = True
+                score += 1
+
+            if any(pipe.right<0 for pipe in pipes):
                 pipe_rects.remove(pipes)
-                continue
+                flag = False
+
+
             for pipe in pipes:
                 pipe.left -= 3
-                if pipe.right < 0:
-                    pipes.clear()
 
 
 
@@ -107,8 +120,8 @@ while True:
 
 
     screen.blit(bg_surf, (0,0))
-    screen.blit(text_surf, text_rect)
     screen.blit(bird_surf, bird_rect)
+    display_score(score)
     display_pipes(pipe_rects)
     screen.blit(floor_surf, (0,450))
 
